@@ -5,11 +5,13 @@ from pprint import pprint
 
 requests.packages.urllib3.disable_warnings()
 
-here = os.path.abspath('')
+here = os.path.abspath(os.path.dirname(__file__))
 
-there = os.path.abspath(os.path.join(here,"..\.."))
+there1 = os.path.abspath(os.path.join(here, "..\.."))
+there2 = os.path.abspath(os.path.join(here, "../.."))
 
-sys.path.insert(0,there)
+sys.path.insert(0,there1)
+sys.path.insert(0,there2)
 import env_lab
 
 dnac_host = env_lab.DNA_CENTER["host"]
@@ -58,7 +60,13 @@ def print_info(modules):
 
 
 def main():
+    if len(sys.argv) > 1:
+        device_ip_address = sys.argv[1]
+    else:
+        print("Usage of the script is: python putting_it_all_together_my_version.py IP_address_of_device.")
+        sys.exit()
     token = get_token(dnac_host, dnac_port, dnac_username, dnac_password)
+    """
     suffix = "network-device"
     response = get_uri_with_token(dnac_host, dnac_port, token, suffix)
     device_list = response["response"]
@@ -66,19 +74,12 @@ def main():
     for device in device_list:
         uptime = "N/A" if device["upTime"] is None else device["upTime"]
         print("{0:30}{1:30}{2:30}{3:30}".format(device["hostname"], device["managementIpAddress"], device["platformId"], uptime))
-
-    dev_id = ip_to_id("10.10.22.69")
+    """
+    dev_id = ip_to_id(device_ip_address)
     modules = get_modules(dev_id)
     print_info(modules)
 
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
 
